@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>祝贺小学毕业</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(to bottom, #1a1a2e, #16213e);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "微软雅黑", sans-serif;
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+        .content {
+            z-index: 10;
+        }
+        h1 {
+            font-size: 48px;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px #ffd700;
+        }
+        p {
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        /* 烟花画布 */
+        #fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div class="content">
+    <h1>🎓 祝贺冉妹小学毕业 🎓</h1>
+    <p>愿你前程似锦，未来可期！</p>
+    <p>保持热爱，奔赴下一场山海 ✨</p>
+</div>
+
+<script>
+// 自动放烟花效果
+const canvas = document.getElementById('fireworks');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+class Firework {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height;
+        this.speed = 6;
+        this.angle = -Math.PI / 2 + (Math.random() - 0.5) * 0.5;
+        this.vx = Math.cos(this.angle) * this.speed;
+        this.vy = Math.sin(this.angle) * this.speed;
+        this.alpha = 1;
+        this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+    }
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.alpha -= 0.01;
+    }
+    draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.restore();
+    }
+}
+
+let fireworks = [];
+
+function createFirework() {
+    fireworks.push(new Firework());
+    setTimeout(createFirework, 300);
+}
+createFirework();
+
+function animate() {
+    ctx.fillStyle = 'rgba(0,0,0,0.1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    fireworks.forEach((f, i) => {
+        f.update();
+        f.draw();
+        if (f.alpha <= 0) fireworks.splice(i, 1);
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>
